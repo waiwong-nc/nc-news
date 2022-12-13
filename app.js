@@ -1,8 +1,10 @@
 const Express = require('express');
 const app = Express();
 const topicsRoute = require('./router/topics');
+const articlesRoute = require("./router/articles");
 
 app.use('/api/topics', topicsRoute);
+app.use("/api/articles", articlesRoute);
 
 app.use('*',( _ ,res) => {
     res.status(404).send({msg:'Page Not Found'});
