@@ -57,7 +57,6 @@ describe('API',() => {
                   topic: expect.any(String),
                   created_at: expect.any(String),
                   votes: expect.any(Number),
-                  comment_count: expect.toBeOneOf([null, expect.any(String)]),
                   comment_count: expect.any(Number),
                 })
               );
