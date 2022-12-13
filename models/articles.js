@@ -18,3 +18,28 @@ exports.selectAllArticles = () => {
     return rows;
   });
 };
+
+
+
+exports.selectArticle = (article_id) => {
+
+  const sql = ` SELECT article_id FROM articles`;
+  return db
+    .query(sql)
+    .then(({ rows }) => {
+      const idWhiteList = rows.map((row) => row.article_id);
+
+      if (!idWhiteList.includes(+article_id)) {
+        return Promise.reject({ status: 400, msg: "Bad Request" });
+      }
+    })
+    .then(() => {
+      const sql = `
+          SELECT author, title, article_id, body, topic, created_at, votes
+          FROM articles
+          WHERE article_id = $1 `;
+      return db.query(sql, [article_id]).then(({ rows }) => {
+        return rows;
+      });
+    });
+};

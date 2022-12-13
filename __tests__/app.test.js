@@ -46,32 +46,66 @@ describe('API',() => {
         .get("/api/articles/")
         .expect(200)
         .then(({ body }) => {
-            const { articles } = body;
-            expect(articles).toHaveLength(12);
-            articles.forEach((article) => {
-              expect(article).toEqual(
-                expect.objectContaining({
-                  author: expect.any(String),
-                  title: expect.any(String),
-                  article_id: expect.any(Number),
-                  topic: expect.any(String),
-                  created_at: expect.any(String),
-                  votes: expect.any(Number),
-                  comment_count: expect.any(Number),
-                })
-              );
-            });
+          const { articles } = body;
+          expect(articles).toHaveLength(12);
+          articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
         });
     });
 
-    test("Return array is sorted by date in descending order", ()=>{
-        return request(app)
+    test("Return array is sorted by date in descending order", () => {
+      return request(app)
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-            const { articles } = body;
-            expect(articles).toBeSorted({ key: 'created_at', descending: true });
+          const { articles } = body;
+          expect(articles).toBeSorted({ key: "created_at", descending: true });
         });
     });
   }); // End of '4. GET /api/articles'
+
+  describe("5. GET /api/articles/article_id", () => {
+    test("200, Respond with an array of articles objects", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          const { article } = body;
+          expect(article).toHaveLength(1);
+          expect(article[0]).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+        });
+    });
+
+    test('400, Respond with "Bad Request" if article id is not valid', () => {
+      return request(app)
+        .get("/api/articles/100")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Bad Request");
+        });
+    });
+
+  }); // End of 5. GET /api/articles/article_id
 })
