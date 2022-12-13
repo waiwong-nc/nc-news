@@ -16,7 +16,7 @@ describe('API',() => {
       .get("/asjdfh")
       .expect(404)
       .then(({ body }) => {
-        expect(body).toEqual({ msg: "Page Not Found" });
+        expect(body).toEqual({ msg: "Not Found" });
       });
   });
 
@@ -40,5 +40,24 @@ describe('API',() => {
     });
   }); // End of '3. GET /api/topics'
 
-  
+  describe("9. GET /api/users", () => {
+    test("200, Respond with an array of users objects", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          const { users } = body;
+          expect(users).toHaveLength(4);
+          users.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+  }); // End of '9. GET /api/users'
 })
