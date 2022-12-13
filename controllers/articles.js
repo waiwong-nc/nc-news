@@ -1,8 +1,8 @@
-const articlessModel = require("../models/articles");
+const articlesModel = require("../models/articles");
 
 // GET api/topics
 exports.getArticles = (req, res, next) => {
-  articlessModel
+  articlesModel
     .selectAllArticles()
     .then((articles) => {
       res.status(200).send({ articles: articles });
@@ -16,10 +16,23 @@ exports.getArticles = (req, res, next) => {
 // GET api/article
 exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
-  articlessModel
+  articlesModel
     .selectArticle(article_id)
     .then((article) => {
       res.status(200).send({ article: article});
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+// GET api/article/getComments
+exports.getComments = (req, res, next) => {
+  const { article_id } = req.params;
+  articlesModel
+    .selectComments(article_id)
+    .then((comments) => {
+      res.status(200).send({ comments: comments });
     })
     .catch((err) => {
       next(err);
