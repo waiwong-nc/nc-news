@@ -82,28 +82,27 @@ describe('API',() => {
         .expect(200)
         .then(({ body }) => {
           const { article } = body;
+          console.log(article)
           expect(article).toHaveLength(1);
-          expect(article[0]).toEqual(
-            expect.objectContaining({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              topic: expect.any(String),
-              body: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-            })
-          );
+          expect(article[0]).toEqual({
+            author: "butter_bridge",
+            title: "Living in the shadow of a great man",
+            article_id: 1,
+            topic: "mitch",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+          });
         });
     });
 
-    test('400, Respond with "Bad Request" if article id is not valid', () => {
+    test('404, Respond with non-existent IDs', () => {
       return request(app)
         .get("/api/articles/100")
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toBe("Bad Request");
+          expect(msg).toBe("ID Not Exist");
         });
     });
 
