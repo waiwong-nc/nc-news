@@ -46,32 +46,65 @@ describe('API',() => {
         .get("/api/articles/")
         .expect(200)
         .then(({ body }) => {
-            const { articles } = body;
-            expect(articles).toHaveLength(12);
-            articles.forEach((article) => {
-              expect(article).toEqual(
-                expect.objectContaining({
-                  author: expect.any(String),
-                  title: expect.any(String),
-                  article_id: expect.any(Number),
-                  topic: expect.any(String),
-                  created_at: expect.any(String),
-                  votes: expect.any(Number),
-                  comment_count: expect.any(Number),
-                })
-              );
-            });
+          const { articles } = body;
+          expect(articles).toHaveLength(12);
+          articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
         });
     });
 
-    test("Return array is sorted by date in descending order", ()=>{
-        return request(app)
+    test("Return array is sorted by date in descending order", () => {
+      return request(app)
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-            const { articles } = body;
-            expect(articles).toBeSorted({ key: 'created_at', descending: true });
+          const { articles } = body;
+          expect(articles).toBeSorted({ key: "created_at", descending: true });
         });
     });
   }); // End of '4. GET /api/articles'
+
+  describe("5. GET /api/articles/article_id", () => {
+    test("200, Respond with an array of articles objects", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          const { article } = body;
+          console.log(article)
+          expect(article).toHaveLength(1);
+          expect(article[0]).toEqual({
+            author: "butter_bridge",
+            title: "Living in the shadow of a great man",
+            article_id: 1,
+            topic: "mitch",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+          });
+        });
+    });
+
+    test('404, Respond with non-existent IDs', () => {
+      return request(app)
+        .get("/api/articles/100")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("ID Not Exist");
+        });
+    });
+
+  }); // End of 5. GET /api/articles/article_id
 })
