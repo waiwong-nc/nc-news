@@ -8,4 +8,7 @@ route.get("/", articlesController.getArticles);
 // GET /api/articles/:article_id
 route.get("/:article_id", articlesController.getArticle);
 
+// POST /api/articles/:article_id
+route.post("/:article_id/comments", articlesController.postComments);
+
 module.exports = route;

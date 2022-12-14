@@ -3,11 +3,12 @@ const app = Express();
 const topicsRoute = require('./router/topics');
 const articlesRoute = require("./router/articles");
 
+app.use(Express.json());
 app.use('/api/topics', topicsRoute);
 app.use("/api/articles", articlesRoute);
 
 app.use('*',( _ ,res) => {
-    res.status(404).send({msg:'Page Not Found'});
+    res.status(404).send({msg:'Not Found'});
 });
 
 app.use((err, req, res, next) => {
