@@ -39,3 +39,20 @@ exports.getComments = (req, res, next) => {
       next(err);
     });
 };
+
+
+
+// POST /api/articles/:article_id
+exports.postComments = (req, res, next) => {
+  const { article_id } = req.params;
+  const comment = req.body;
+
+  articlesModel
+    .insertComments(article_id, comment)
+    .then((comment) => {
+      res.status(201).send({ comment: comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};

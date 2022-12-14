@@ -166,9 +166,89 @@ describe('API',() => {
           const { comments } = body;
           expect(comments).toEqual([]);
         });
-    });   
+    });
+  }); // End of 6. GET /api/articles/:article_id/comments
 
   
+  describe("7. POST /api/articles/:article_id/comments", () => {
+    test("201, Respond with an posted comment", () => {
+      const comment = {
+        username: "butter_bridge",
+        body: "Hello! what a hot weather",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(201)
+        .then(({ body }) => {
+          const { comment } = body;
+          expect(comment).toHaveLength(1);
+          expect(comment[0]).toEqual({
+            comment_id: expect.any(Number),
+            body: "Hello! what a hot weather",
+            votes: 0,
+            author: "butter_bridge",
+            article_id: 1,
+            created_at: expect.any(String),
+          });
+        });
+    });
 
-  }); // End of 6. GET /api/articles/:article_id/comments
+    test("400, Respond to missing body and username property", () => {
+      const comment = {};
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Missing Property");
+        });
+    });
+
+    test("400, Respond to empty body and username input", () => {
+      const comment = {
+        body: "     ",
+        username: "     ",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Invalid Input");
+        });
+    });
+
+    test("404, Respond to non-existent IDs", () => {
+      const comment = {
+        username: "butter_bridge",
+        body: "Hello! what a hot weather",
+      };
+      return request(app)
+        .post("/api/articles/100/comments")
+        .send(comment)
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("ID Not Exist");
+        });
+    });
+
+    test("404, Respond to non-existent user", () => {
+      const comment = {
+        username: "Tom",
+        body: "Hello! what a hot weather",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Invalid Username");
+        });
+    });
+  }); // End of 7. POST /api/articles/:article_id/comments
 })
