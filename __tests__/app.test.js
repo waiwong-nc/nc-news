@@ -151,7 +151,7 @@ describe('API',() => {
     test('400, Respond with "Invalid ID" if article id is not valid', () => {
       return request(app)
         .get("/api/articles/hellow/comments")
-        .expect(404)
+        .expect(400)
         .then(({ body }) => {
           const { msg } = body;
           expect(msg).toBe("Invalid ID");
@@ -321,7 +321,7 @@ describe('API',() => {
         inc_vote: 100,
       };
       return request(app)
-        .patch("/api/articles/banana")
+        .patch("/api/articles/3.12")
         .send(article)
         .expect(400)
         .then(({ body }) => {
