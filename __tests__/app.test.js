@@ -95,7 +95,7 @@ describe('API',() => {
         });
     });
 
-    test('404, Respond with non-existent IDs', () => {
+    test("404, Respond with non-existent IDs", () => {
       return request(app)
         .get("/api/articles/100")
         .expect(404)
@@ -104,6 +104,71 @@ describe('API',() => {
           expect(msg).toBe("ID Not Exist");
         });
     });
-
   }); // End of 5. GET /api/articles/article_id
+
+  describe("6. GET /api/articles/:article_id/comments", () => {
+    test("200, Respond with an array of articles objects", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments).toHaveLength(11);
+          comments.forEach((comment) => {
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+
+    test("comments should be served with the most recent comments first", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments).toBeSorted({ key: "created_at", descending: true });
+        });
+    });
+
+    test('404, Respond with "ID Not Exist" if article id is not exist', () => {
+      return request(app)
+        .get("/api/articles/100/comments")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("ID Not Exist");
+        });
+    });
+
+    test('400, Respond with "Invalid ID" if article id is not valid', () => {
+      return request(app)
+        .get("/api/articles/hellow/comments")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Invalid ID");
+        });
+    });
+
+    test("200, Respond with empty array if article ID valid but no comment for that article", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments).toEqual([]);
+        });
+    });   
+
+  
+
+  }); // End of 6. GET /api/articles/:article_id/comments
 })

@@ -27,7 +27,6 @@ exports.selectArticle = (article_id) => {
           FROM articles
           WHERE article_id = $1 `;
 
-
   return db.query(sql, [article_id]).then(({ rows }) => {
 
     if (rows.length === 0) {
@@ -35,4 +34,33 @@ exports.selectArticle = (article_id) => {
     }
     return rows;
   }); 
+};
+
+exports.selectComments = (article_id) => {
+
+  // Check if article_id is valid
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 404, msg: "Invalid ID" });
+  }
+
+  // Check if article_id is exist
+  return db.query(`SELECT * FROM articles  WHERE article_id = $1 `, [article_id])
+  .then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "ID Not Exist" });
+    }
+  })
+
+  // After passing all the validation 
+  .then(() => {
+    const sql = `SELECT comment_id, votes, created_at, author, body
+      FROM comments
+      WHERE article_id = $1 
+      ORDER BY created_at DESC;`;
+
+    return db.query(sql, [article_id]).then(({ rows }) => {
+      console.log(rows)
+      return rows;
+    });
+  });
 };
