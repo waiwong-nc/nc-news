@@ -16,7 +16,7 @@ describe('API',() => {
       .get("/asjdfh")
       .expect(404)
       .then(({ body }) => {
-        expect(body).toEqual({ msg: "Page Not Found" });
+        expect(body).toEqual({ msg: "Not Found" });
       });
   });
 
@@ -82,7 +82,6 @@ describe('API',() => {
         .expect(200)
         .then(({ body }) => {
           const { article } = body;
-          console.log(article)
           expect(article).toHaveLength(1);
           expect(article[0]).toEqual({
             author: "butter_bridge",
