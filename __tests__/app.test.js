@@ -138,13 +138,23 @@ describe('API',() => {
         });
     });
 
-    test('404, Respond with "Bad Request" if article id is not valid or ID not exist', () => {
+    test('404, Respond with "ID Not Exist" if article id is not exist', () => {
       return request(app)
         .get("/api/articles/100/comments")
         .expect(404)
         .then(({ body }) => {
           const { msg } = body;
           expect(msg).toBe("ID Not Exist");
+        });
+    });
+
+    test('400, Respond with "Invalid ID" if article id is not valid', () => {
+      return request(app)
+        .get("/api/articles/hellow/comments")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Invalid ID");
         });
     });
 
@@ -157,6 +167,8 @@ describe('API',() => {
           expect(comments).toEqual([]);
         });
     });   
+
+  
 
   }); // End of 6. GET /api/articles/:article_id/comments
 })

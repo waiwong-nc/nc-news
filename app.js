@@ -4,7 +4,7 @@ const topicsRoute = require('./router/topics');
 const articlesRoute = require("./router/articles");
 
 app.use('/api/topics', topicsRoute);
-app.use("/api/articles", articlesRoute);
+app.use('/api/articles', articlesRoute);
 
 app.use('*',( _ ,res) => {
     res.status(404).send({msg:'Not Found'});
@@ -12,7 +12,6 @@ app.use('*',( _ ,res) => {
 
 app.use((err, req, res, next) => {
 
-  console.log(err)
 
   //  Handle Error from psql
   if (err.code === "22P02") {
