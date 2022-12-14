@@ -25,3 +25,19 @@ exports.getArticle = (req, res, next) => {
       next(err);
     });
 };
+
+
+
+// PATCH api/article
+exports.patchArticle = (req, res, next) => {
+    const { article_id } = req.params;
+ 
+    articlesModel
+      .updateArticle(article_id, req.body)
+      .then((article) => {
+        res.status(200).send({ article: article });
+      })
+      .catch((err) => {
+        next(err);
+      });
+}
