@@ -251,4 +251,46 @@ describe('API',() => {
         });
     });
   }); // End of 7. POST /api/articles/:article_id/comments
+
+  describe.only("12. DELETE /api/comments/:comment_id", () => {
+      test('204, Delete comment. Return no content', () => {
+        return request(app)
+          .delete("/api/comments/1")
+          .expect(204)
+          .then(({body}) => {
+            expect(body).toEqual({});
+            
+            // check if comment_id 1 exist:
+            return request(app)
+              .delete("/api/comments/1")
+              .expect(404)
+              .then(({ body }) => {
+                const { msg } = body;
+                expect(msg).toEqual("ID Not Found");
+              });
+          });
+      });
+  
+      test("404, No comments ID found", () => {
+        return request(app)
+          .delete("/api/comments/1000")
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toEqual("ID Not Found");
+          });
+      });
+
+      test("400, Invalid ID", () => {
+        return request(app)
+          .delete("/api/comments/pppp")
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+            expect(msg).toBe("Invalid ID");
+          });
+      });
+
+
+  });
 })
