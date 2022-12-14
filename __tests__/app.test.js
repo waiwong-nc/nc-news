@@ -169,7 +169,6 @@ describe('API',() => {
     });
   }); // End of 6. GET /api/articles/:article_id/comments
 
-  
   describe("7. POST /api/articles/:article_id/comments", () => {
     test("201, Respond with an posted comment", () => {
       const comment = {
@@ -251,4 +250,84 @@ describe('API',() => {
         });
     });
   }); // End of 7. POST /api/articles/:article_id/comments
+
+
+  describe("8. PATCH /api/articles/:article_id", () => {
+    test("200, Respond with an update articles objects (in array)", () => {
+      const article = {
+        inc_votes: 100,
+      };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(article)
+        .expect(200)
+        .then(({ body }) => {
+          const { article } = body;
+          expect(article).toHaveLength(1);
+          expect(article[0]).toEqual({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: expect.any(String),
+            votes: 200,
+          });
+        });
+    });
+
+    test("404, non-existent article id", () => {
+      const article = {
+        inc_votes: 100,
+      };
+      return request(app)
+        .patch("/api/articles/100")
+        .send(article)
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("ID Not Exist");
+        });
+    });
+
+    test("400, 'inc_votes' is not exist in req.body", () => {
+      const article = {};
+      return request(app)
+        .patch("/api/articles/1")
+        .send(article)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Missing Property");
+        });
+    });
+
+    test("400, value in 'inc_votes' is not valid", () => {
+      const article = {
+        inc_votes: "1i23",
+      };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(article)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Invalid Input");
+        });
+    });
+
+    test("404, missing article_id in url", () => {
+      const article = {
+        inc_vote: 100,
+      };
+      return request(app)
+        .patch("/api/articles")
+        .send(article)
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Not Found");
+        });
+    });
+  }); // End of 8. PATCH /api/articles/:article_id
 })
