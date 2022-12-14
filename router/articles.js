@@ -11,4 +11,9 @@ route.get("/:article_id", articlesController.getArticle);
 // GET /api/articles/:article_id/comments
 route.get("/:article_id/comments", articlesController.getComments);
 
+
+// POST /api/articles/:article_id
+route.post("/:article_id/comments", articlesController.postComments);
+
+
 module.exports = route;
