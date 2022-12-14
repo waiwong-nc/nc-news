@@ -42,9 +42,11 @@ exports.selectArticle = (article_id) => {
 exports.selectComments = (article_id) => {
 
   // Check if article_id is valid
-  if (isNaN(article_id)) {
+  if (!Number.isInteger(+article_id)) {
     return Promise.reject({ status: 404, msg: "Invalid ID" });
   }
+
+
 
   // Check if article_id is exist
   return db.query(`SELECT * FROM articles  WHERE article_id = $1 `, [article_id])
