@@ -316,17 +316,17 @@ describe('API',() => {
         });
     });
 
-    test("404, missing article_id in url", () => {
+    test("400, invalid article_id", () => {
       const article = {
         inc_vote: 100,
       };
       return request(app)
-        .patch("/api/articles")
+        .patch("/api/articles/banana")
         .send(article)
-        .expect(404)
+        .expect(400)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toBe("Not Found");
+          expect(msg).toBe("Invalid ID");
         });
     });
   }); // End of 8. PATCH /api/articles/:article_id

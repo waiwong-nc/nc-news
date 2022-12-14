@@ -118,6 +118,11 @@ exports.updateArticle = (article_id, body) => {
   const { inc_votes } = body;
 
   // Check if inc_votes exist in req.body
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Invalid ID" });
+  }
+
+  // Check if inc_votes exist in req.body
   if (!inc_votes) {
     return Promise.reject({ status: 400, msg: "Missing Property" });
   }
