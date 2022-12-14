@@ -50,7 +50,7 @@ exports.postComments = (req, res, next) => {
   articlesModel
     .insertComments(article_id, comment)
     .then((comment) => {
-      res.status(200).send({ comment: comment });
+      res.status(201).send({ comment: comment });
     })
     .catch((err) => {
       next(err);

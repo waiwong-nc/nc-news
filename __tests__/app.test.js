@@ -171,7 +171,7 @@ describe('API',() => {
 
   
   describe("7. POST /api/articles/:article_id/comments", () => {
-    test("200, Respond with an posted comment", () => {
+    test("201, Respond with an posted comment", () => {
       const comment = {
         username: "butter_bridge",
         body: "Hello! what a hot weather",
@@ -179,7 +179,7 @@ describe('API',() => {
       return request(app)
         .post("/api/articles/1/comments")
         .send(comment)
-        .expect(200)
+        .expect(201)
         .then(({ body }) => {
           const { comment } = body;
           expect(comment).toHaveLength(1);
