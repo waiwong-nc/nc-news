@@ -166,9 +166,131 @@ describe('API',() => {
           const { comments } = body;
           expect(comments).toEqual([]);
         });
-    });   
-
-  
-
+    });
   }); // End of 6. GET /api/articles/:article_id/comments
+
+  describe("10. GET /api/articles (queries)", () => {
+    test("200, Respond with an array of articles objects when no query is attached", () => {
+      return request(app)
+        .get("/api/articles/")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toHaveLength(12);
+          articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+
+    test("200, Respond with an array of articles objects that topic equals to 'mitch'", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toHaveLength(11);
+          articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: 'mitch',
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+
+    test("200, Respond with an array of articles objects defaultly sorted by date descendingly", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toBeSorted({ key: "created_at", descending: true });
+        });
+    });
+
+    test("200, Respond with an array of articles objects that defaultly sort by title ascendingly", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&sort_by=title&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toHaveLength(11);
+          expect(articles).toBeSorted({ key: "title", descending: false });
+          articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: "mitch",
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+
+    test("404, when no topic is found", () => {
+      return request(app)
+        .get("/api/articles?topic=abcdefg")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe('Not Found')
+        });
+    });
+
+    test("400, when value of query (sort_by) is invalid", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&sort_by=user_id")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("'Sort_by' Invalid");
+        });
+    });
+
+    test("400, when value of query (order) is invalid", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&sort_by=title&order=xyz")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("'Order' Invalid");
+        });
+    });
+
+    test("400, when queries'keys is invalid", () => {
+      // test 1
+      return request(app)
+        .get("/api/articles?topippc=mitch&so-rt_by=title&or__der=xyz")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Query Key Invalid");
+        });
+    });
+
+
+  }); // End of 10. GET /api/articles (queries)
 })
