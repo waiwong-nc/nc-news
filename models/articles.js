@@ -20,24 +20,24 @@ const db = require("../db/connection");
 // };
 
 
+// // Q5
+// exports.selectArticle = (article_id) => {
 
-exports.selectArticle = (article_id) => {
+//   const sql = `SELECT author, title, article_id, body, topic, created_at, votes
+//           FROM articles
+//           WHERE article_id = $1 `;
 
-  const sql = `SELECT author, title, article_id, body, topic, created_at, votes
-          FROM articles
-          WHERE article_id = $1 `;
+//   return db.query(sql, [article_id]).then(({ rows }) => {
 
-  return db.query(sql, [article_id]).then(({ rows }) => {
-
-    if (rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "ID Not Exist" });  
-    }
-    return rows;
-  }); 
-};
+//     if (rows.length === 0) {
+//       return Promise.reject({ status: 404, msg: "ID Not Exist" });  
+//     }
+//     return rows;
+//   }); 
+// };
 
 
-// Q6 : 
+// Q6 : & Q11
 exports.selectComments = (article_id) => {
 
   // Check if article_id is valid
@@ -182,29 +182,6 @@ exports.selectAllArticles = (queries) => {
   let orderByStatement = "";
   const values = [];
 
-  // if contains query "topic"
-//   if (topic) {
-//      const topicNotFound  = false;
-//       db.query("SELECT * FROM topics WHERE slug = $1", [topic])
-//       .then(({ rows }) => {
-//         if (rows.length === 0) {
-//           // return false;
-//           // return Promise.reject({ status: 404, msg: "Topic Not Found" });
-//           return  true;
-//         } else 
-//       });
-
-//       console.log(topicNotFound, "<< topicNotFound");
-    
-    
-// db.query("SELECT * FROM topics WHERE slug = $1", [topic])
-
-
-//       whereStatement = "WHERE topic = $1 ";
-//       values.push(topic);
-    
-//   }
-
   // if contains query "sort_by"
   if (sort_by) {
     // Check if the sort_by value matches with whitelist
@@ -261,10 +238,32 @@ exports.selectAllArticles = (queries) => {
         return rows;
       });
     });
+};
 
 
+// Q11
+exports.selectArticle = (article_id) => {
+   
+  if (!Number.isInteger(+article_id)) {
+     return Promise.reject({ status: 400, msg: "ID Not Valid" });
+   }
+  
+  const sql = `WITH cc AS (
+              SELECT article_id, count(article_id)::int AS comment_count
+              FROM comments
+              GROUP BY article_id
+          )
+          SELECT  a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, a.body, COALESCE(comment_count,0)AS comment_count
+          FROM articles as a
+          LEFT JOIN cc
+          ON cc.article_id = a.article_id
+          WHERE a.article_id = $1 `;
 
+  return db.query(sql, [article_id]).then(({ rows }) => {
 
-
-
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "ID Not Exist" });  
+    }
+    return rows;
+  }); 
 };
