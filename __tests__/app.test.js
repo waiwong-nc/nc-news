@@ -251,7 +251,6 @@ describe('API',() => {
     });
   }); // End of 7. POST /api/articles/:article_id/comments
 
-
   describe("8. PATCH /api/articles/:article_id", () => {
     test("200, Respond with an update articles objects (in array)", () => {
       const article = {
@@ -330,4 +329,25 @@ describe('API',() => {
         });
     });
   }); // End of 8. PATCH /api/articles/:article_id
+
+  describe("9. GET /api/users", () => {
+    test("200, Respond with an array of users objects", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          const { users } = body;
+          expect(users).toHaveLength(4);
+          users.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+  }); // End of '9. GET /api/users'
 })
