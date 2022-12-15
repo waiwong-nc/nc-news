@@ -75,7 +75,7 @@ describe('API',() => {
     });
   }); // End of '4. GET /api/articles'
 
-  describe("5. GET /api/articles/article_id", () => {
+  describe.skip("5. GET /api/articles/article_id", () => {
     test("200, Respond with an array of articles objects", () => {
       return request(app)
         .get("/api/articles/1")
@@ -479,10 +479,50 @@ describe('API',() => {
         .expect(404)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toBe('Topic Not Found')
+          expect(msg).toBe("Topic Not Found");
+        });
+    });
+  }); // End of 10. GET /api/articles (queries)
+
+  describe("11. GET /api/articles/:article_id (comment count)", () => {
+    test("200, Respond with an array of articles objects", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          const { article } = body;
+          expect(article).toHaveLength(1);
+          expect(article[0]).toEqual({
+            author: "butter_bridge",
+            title: "Living in the shadow of a great man",
+            article_id: 1,
+            topic: "mitch",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            comment_count : 11,
+            votes: 100,
+          });
         });
     });
 
+    test("404, Respond with non-existent IDs", () => {
+      return request(app)
+        .get("/api/articles/100")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("ID Not Exist");
+        });
+    });
 
-  }); // End of 10. GET /api/articles (queries)
+    test("400, Respond with Invalid IDs", () => {
+      return request(app)
+        .get("/api/articles/sfadf")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("ID Not Valid");
+        });
+    });
+  }); // End of 11. GET /api/articles/:article_id (comment count)
 })
