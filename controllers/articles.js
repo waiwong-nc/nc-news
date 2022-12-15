@@ -1,6 +1,6 @@
 const articlesModel = require("../models/articles");
 
-// GET api/topics
+
 exports.getArticles = (req, res, next) => {
   articlesModel
     .selectAllArticles()
@@ -13,7 +13,7 @@ exports.getArticles = (req, res, next) => {
 };
 
 
-// GET api/article
+
 exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
   articlesModel
@@ -26,7 +26,6 @@ exports.getArticle = (req, res, next) => {
     });
 };
 
-// GET api/article/comments
 exports.getComments = (req, res, next) => {
  
   const { article_id } = req.params;
@@ -42,7 +41,7 @@ exports.getComments = (req, res, next) => {
 
 
 
-// Q7 : POST /api/articles/:article_id
+
 exports.postComments = (req, res, next) => {
   const { article_id } = req.params;
   const comment = req.body;
@@ -59,7 +58,6 @@ exports.postComments = (req, res, next) => {
 
 
 
-// Q8: PATCH /api/article
 exports.patchArticle = (req, res, next) => {
     const { article_id } = req.params;
  

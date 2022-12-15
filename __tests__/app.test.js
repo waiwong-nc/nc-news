@@ -286,7 +286,7 @@ describe('API',() => {
         .expect(404)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toBe("ID Not Exist");
+          expect(msg).toBe("Non Existent ID");
         });
     });
 

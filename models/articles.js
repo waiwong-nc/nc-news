@@ -138,7 +138,7 @@ exports.updateArticle = (article_id, body) => {
       .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
       .then(({ rows }) => {
         if (rows.length === 0) {
-          return Promise.reject({ status: 404, msg: "ID Not Exist" });
+          return Promise.reject({ status: 404, msg: "Non Existent ID" });
         }
         return rows[0].votes;
       })
