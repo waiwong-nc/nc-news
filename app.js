@@ -3,8 +3,10 @@ const app = Express();
 const topicsRoute = require("./router/topics");
 const articlesRoute = require("./router/articles");
 const errorHandlers = require("./controllers/errors");
+const apiControllers = require("./controllers/api");
 app.use(Express.json());
 
+app.get("/api", apiControllers.getDescription);
 app.use("/api/topics", topicsRoute);
 app.use("/api/articles", articlesRoute);
 

@@ -3,6 +3,7 @@ const app = require("../app");
 const seed = require('../db/seeds/seed');
 const db = require('../db/connection');
 const testData = require("../db/data/test-data");
+const fs = require('fs/promises');
 
 afterAll(() => 
   db.end()
@@ -251,4 +252,47 @@ describe('API',() => {
         });
     });
   }); // End of 7. POST /api/articles/:article_id/comments
+
+  describe("13. GET /api", ()=> {
+    test('200. Respond with api endpoint description', () => {
+      const promise0 = request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          const { api } = body;
+          return api;
+        });
+
+      const promise1 = fs
+        .readFile(`${__dirname}/../endpoints.json`)
+        .then((content) => {
+          return JSON.parse(content);
+        });
+
+      // return true if both same
+      Promise.all([promise0, promise1]).then((promise) => {
+        expect(promise[0]).toEqual(promise[1]);
+      });
+
+      // mimic false content to check if return false
+      Promise.all([promise0, promise1]).then((promise) => {
+        expect(promise[0]).not.toEqual({
+          "GET /api": {
+            description:"this is false content",
+          },
+        });
+      });
+    });
+
+
+    test.skip("500. Respond with Access Error if the correct file cannot be accessed", () => {
+      return request(app)
+        .get("/api")
+        .expect(500)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Access Error");
+        });
+    });
+  });
 })

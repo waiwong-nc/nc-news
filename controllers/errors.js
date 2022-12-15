@@ -3,6 +3,7 @@ exports.handle404Paths = (_, res) => {
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
+  console.log(err)
   //  Handle Error from psql
   if (err.code === "22P02") {
     res.status(400).send("Bad Request");
