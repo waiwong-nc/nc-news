@@ -36,12 +36,14 @@ exports.selectArticle = (article_id) => {
   }); 
 };
 
+
+// Q6 : 
 exports.selectComments = (article_id) => {
 
   // Check if article_id is valid
-  if (isNaN(article_id)) {
-    return Promise.reject({ status: 404, msg: "Invalid ID" });
-  }
+   if (!Number.isInteger(+article_id)) {
+     return Promise.reject({ status: 400, msg: "Invalid ID" });
+   }
 
   // Check if article_id is exist
   return db.query(`SELECT * FROM articles  WHERE article_id = $1 `, [article_id])
@@ -106,4 +108,50 @@ exports.insertComments = (article_id, comment) => {
         return rows;
       });
     });
+};
+
+
+
+
+// Q8: PATCH /api/article
+exports.updateArticle = (article_id, body) => {
+  const { inc_votes } = body;
+
+  // Check if inc_votes exist in req.body
+   if (!Number.isInteger(+article_id)) {
+     return Promise.reject({ status: 400, msg: "Invalid ID" });
+   }
+
+  // Check if inc_votes exist in req.body
+  if (!inc_votes) {
+    return Promise.reject({ status: 400, msg: "Missing Property" });
+  }
+
+  // Check if value in inc_votes valid
+  if (typeof inc_votes !== "number") {
+    return Promise.reject({ status: 400, msg: "Invalid Input" });
+  }
+
+  // Check if article id exist
+  return (
+    db
+      .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
+      .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({ status: 404, msg: "Non Existent ID" });
+        }
+        return rows[0].votes;
+      })
+      // Passed all validation
+      .then((votes) => {
+        const sql = `UPDATE articles 
+    SET votes = $1 
+    WHERE article_id = $2
+    RETURNING *; `;
+        return db.query(sql, [votes + inc_votes, article_id]);
+      })
+      .then(({ rows }) => {
+        return rows;
+      })
+  );
 };

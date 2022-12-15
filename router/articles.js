@@ -16,4 +16,7 @@ route.get("/:article_id/comments", articlesController.getComments);
 route.post("/:article_id/comments", articlesController.postComments);
 
 
+// PATCH /api/articles/:article_id
+route.patch("/:article_id", articlesController.patchArticle);
+
 module.exports = route;
