@@ -3,6 +3,7 @@ const app = require("../app");
 const seed = require('../db/seeds/seed');
 const db = require('../db/connection');
 const testData = require("../db/data/test-data");
+const fs = require('fs/promises');
 
 afterAll(() => 
   db.end()
@@ -526,7 +527,7 @@ describe('API',() => {
     });
   }); // End of 11. GET /api/articles/:article_id (comment count)
 
-  describe.only("12. DELETE /api/comments/:comment_id", () => {
+  describe("12. DELETE /api/comments/:comment_id", () => {
     test("204, Delete comment. Return no content", () => {
       return request(app)
         .delete("/api/comments/1")
@@ -565,4 +566,24 @@ describe('API',() => {
         });
     });
   }); // End of 12. DELETE /api/comments/:comment_id
+
+  describe("13. GET /api", () => {
+    test("200. Respond with api endpoint description", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          const { api } = body;
+          return api;
+        })
+        .then((api) => {
+          return fs
+            .readFile(`${__dirname}/../endpoints.json`)
+            .then((content) => {
+              expect(api).toEqual(JSON.parse(content));
+              expect(api).not.toEqual({});
+            });
+        });
+    });
+  }); // End of 13. GET /api
 })

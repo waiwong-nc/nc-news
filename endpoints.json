@@ -11,7 +11,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
@@ -23,5 +23,90 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an array of a single article",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "article_id": 1,
+          "body": "Text from the article..",
+          "topic": "cooking",
+          "created_at": 1527695953341,
+          "votes": 100,
+          "comment_count": 1
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments regarding the specified article id",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "comment_id": 1,
+          "votes": 100,
+          "created_at": 1527695953341,
+          "author": "weegembump",
+          "body": "Text from the article.."
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "create a comment to the specified article id",
+    "exampleInput": {
+      "username": "butter_bridge",
+      "body": "Oh, I've got compassion running out of...."
+    },
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 1,
+          "body": "Oh, I've got compassion running out of....",
+          "votes": 16,
+          "author": "butter_bridge",
+          "article_id": 9,
+          "created_at": 1586179020000
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "amend the votes of specific article",
+    "exampleInput": { "inc_votes": 100 },
+    "exampleResponse": {
+      "articles": [
+        {
+          "article_id": 1,
+          "title": "Living in the shadow of a great man",
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "body": "I find this existence challenging",
+          "created_at": 1594329060000,
+          "votes": 200
+        }
+      ]
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "user_id": 1,
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "delete a specific comment"
   }
 }
