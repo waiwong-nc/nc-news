@@ -478,7 +478,6 @@ describe('API',() => {
         .get("/api/articles?topic=asdf")
         .expect(404)
         .then(({ body }) => {
-          console.log(body)
           const { msg } = body;
           expect(msg).toBe('Topic Not Found')
         });
