@@ -1,16 +1,16 @@
 const articlesModel = require("../models/articles");
 
 
-exports.getArticles = (req, res, next) => {
-  articlesModel
-    .selectAllArticles()
-    .then((articles) => {
-      res.status(200).send({ articles: articles });
-    })
-    .catch((err) => {
-      next(err);
-    });
-};
+// exports.getArticles = (req, res, next) => {
+//   articlesModel
+//     .selectAllArticles()
+//     .then((articles) => {
+//       res.status(200).send({ articles: articles });
+//     })
+//     .catch((err) => {
+//       next(err);
+//     });
+// };
 
 
 
@@ -70,3 +70,16 @@ exports.patchArticle = (req, res, next) => {
         next(err);
       });
 }
+
+
+// Q10 : GET api/articles?topic=<TOPIC>&sort_by=<COLNUM>&order=< ASC || DESC >
+exports.getArticles = (req, res, next) => {
+  articlesModel.selectAllArticles(req.query)
+    .then((articles) => {
+      res.status(200).send({ articles: articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+

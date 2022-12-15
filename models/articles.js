@@ -1,23 +1,23 @@
 const db = require("../db/connection");
 
-exports.selectAllArticles = () => {
-  const sql = `WITH cc AS ( 
-            SELECT article_id, count(article_id)::int AS comment_count 
-            FROM comments 
-            GROUP BY article_id
-        ) 
-        SELECT  a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, COALESCE(comment_count,0)AS comment_count
-        FROM articles as a
-        LEFT JOIN cc
-        ON cc.article_id = a.article_id
-        ORDER BY created_at DESC;`;
-;
+// exports.selectAllArticles = () => {
+//   const sql = `WITH cc AS ( 
+//             SELECT article_id, count(article_id)::int AS comment_count 
+//             FROM comments 
+//             GROUP BY article_id
+//         ) 
+//         SELECT  a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, COALESCE(comment_count,0)AS comment_count
+//         FROM articles as a
+//         LEFT JOIN cc
+//         ON cc.article_id = a.article_id
+//         ORDER BY created_at DESC;`;
+// ;
 
 
-  return db.query(sql).then(({ rows }) => {
-    return rows;
-  });
-};
+//   return db.query(sql).then(({ rows }) => {
+//     return rows;
+//   });
+// };
 
 
 
@@ -154,4 +154,117 @@ exports.updateArticle = (article_id, body) => {
         return rows;
       })
   );
+};
+
+
+// Q10 : GET api/articles?topic=<TOPIC>&sort_by=<COLNUM>&order=< ASC || DESC >
+exports.selectAllArticles = (queries) => {
+  // Check if query'key valid
+  const queryKeys = Object.keys(queries);
+  const keyWhiteList = ["topic", "sort_by", "order"];
+  for (let i = 0; i < queryKeys.length; i++) {
+    if (!keyWhiteList.includes(queryKeys[i])) {
+      return Promise.reject({ status: 400, msg: "Query Key Invalid" });
+    }
+  }
+
+  const { topic, sort_by, order } = queries;
+  const SortByWhiteList = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  let whereStatement = "";
+  let orderByStatement = "";
+  const values = [];
+
+  // if contains query "topic"
+//   if (topic) {
+//      const topicNotFound  = false;
+//       db.query("SELECT * FROM topics WHERE slug = $1", [topic])
+//       .then(({ rows }) => {
+//         if (rows.length === 0) {
+//           // return false;
+//           // return Promise.reject({ status: 404, msg: "Topic Not Found" });
+//           return  true;
+//         } else 
+//       });
+
+//       console.log(topicNotFound, "<< topicNotFound");
+    
+    
+// db.query("SELECT * FROM topics WHERE slug = $1", [topic])
+
+
+//       whereStatement = "WHERE topic = $1 ";
+//       values.push(topic);
+    
+//   }
+
+  // if contains query "sort_by"
+  if (sort_by) {
+    // Check if the sort_by value matches with whitelist
+    if (!SortByWhiteList.includes(sort_by.trim())) {
+      return Promise.reject({ status: 400, msg: "'Sort_by' Invalid" });
+    }
+    orderByStatement = `ORDER BY ${sort_by} `;
+  } else {
+    orderByStatement = `ORDER BY created_at `;
+  }
+
+  // if contains query "order"
+  if (order) {
+    //  Check if the "order" value is either "desc" or "asc"
+    if (order !== "desc" && order !== "asc") {
+      return Promise.reject({ status: 400, msg: "'Order' Invalid" });
+    }
+    orderByStatement += `${order} `;
+  } else {
+    orderByStatement += "DESC ";
+  }
+
+   
+  return db
+    .query("SELECT * FROM topics")
+    .then(({ rows }) => {
+      const topicWhiteList = rows.map((row) => {
+        return row.slug;
+      });
+
+      // if contains query "topic"
+      if (topic) {
+        if(!topicWhiteList.includes(topic)){
+          return Promise.reject({ status: 404, msg: "Topic Not Found" });
+        }
+        whereStatement = "WHERE topic = $1 ";
+        values.push(topic);
+      }
+    })
+    .then(() => {
+      const sql = `WITH cc AS (
+              SELECT article_id, count(article_id)::int AS comment_count
+              FROM comments
+              GROUP BY article_id
+          )
+          SELECT  a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, COALESCE(comment_count,0)AS comment_count
+          FROM articles as a
+          LEFT JOIN cc
+          ON cc.article_id = a.article_id
+          ${whereStatement}
+          ${orderByStatement};`;
+
+      return db.query(sql, values).then(({ rows }) => {
+        return rows;
+      });
+    });
+
+
+
+
+
+
 };
