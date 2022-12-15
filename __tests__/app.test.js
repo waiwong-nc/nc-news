@@ -432,16 +432,6 @@ describe('API',() => {
         });
     });
 
-    test("404, when no topic is found", () => {
-      return request(app)
-        .get("/api/articles?topic=abcdefg")
-        .expect(404)
-        .then(({ body }) => {
-          const { msg } = body;
-          expect(msg).toBe("Not Found");
-        });
-    });
-
     test("400, when value of query (sort_by) is invalid", () => {
       return request(app)
         .get("/api/articles?topic=mitch&sort_by=user_id")
@@ -472,5 +462,28 @@ describe('API',() => {
           expect(msg).toBe("Query Key Invalid");
         });
     });
+
+    test("200, Return empty array if topic exists but no articles are attached to it ", () => {
+      return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toEqual([]);
+        });
+    });
+
+    test("404, Return topic not exist if no such topic ", () => {
+      return request(app)
+        .get("/api/articles?topic=asdf")
+        .expect(404)
+        .then(({ body }) => {
+          console.log(body)
+          const { msg } = body;
+          expect(msg).toBe('Topic Not Found')
+        });
+    });
+
+
   }); // End of 10. GET /api/articles (queries)
 })

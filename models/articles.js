@@ -183,10 +183,27 @@ exports.selectAllArticles = (queries) => {
   const values = [];
 
   // if contains query "topic"
-  if (topic) {
-    whereStatement = "WHERE topic = $1 ";
-    values.push(topic);
-  }
+//   if (topic) {
+//      const topicNotFound  = false;
+//       db.query("SELECT * FROM topics WHERE slug = $1", [topic])
+//       .then(({ rows }) => {
+//         if (rows.length === 0) {
+//           // return false;
+//           // return Promise.reject({ status: 404, msg: "Topic Not Found" });
+//           return  true;
+//         } else 
+//       });
+
+//       console.log(topicNotFound, "<< topicNotFound");
+    
+    
+// db.query("SELECT * FROM topics WHERE slug = $1", [topic])
+
+
+//       whereStatement = "WHERE topic = $1 ";
+//       values.push(topic);
+    
+//   }
 
   // if contains query "sort_by"
   if (sort_by) {
@@ -210,23 +227,44 @@ exports.selectAllArticles = (queries) => {
     orderByStatement += "DESC ";
   }
 
-  const sql = 
-    `WITH cc AS (
-        SELECT article_id, count(article_id)::int AS comment_count
-        FROM comments
-        GROUP BY article_id
-    )
-    SELECT  a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, COALESCE(comment_count,0)AS comment_count
-    FROM articles as a
-    LEFT JOIN cc
-    ON cc.article_id = a.article_id
-    ${whereStatement}
-    ${orderByStatement};`;
+   
+  return db
+    .query("SELECT * FROM topics")
+    .then(({ rows }) => {
+      const topicWhiteList = rows.map((row) => {
+        return row.slug;
+      });
 
-  return db.query(sql,values).then(({ rows }) => {
-    if (rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "Not Found" });
-    }
-    return rows;
-  });
+      // if contains query "topic"
+      if (topic) {
+        if(!topicWhiteList.includes(topic)){
+          return Promise.reject({ status: 404, msg: "Topic Not Found" });
+        }
+        whereStatement = "WHERE topic = $1 ";
+        values.push(topic);
+      }
+    })
+    .then(() => {
+      const sql = `WITH cc AS (
+              SELECT article_id, count(article_id)::int AS comment_count
+              FROM comments
+              GROUP BY article_id
+          )
+          SELECT  a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, COALESCE(comment_count,0)AS comment_count
+          FROM articles as a
+          LEFT JOIN cc
+          ON cc.article_id = a.article_id
+          ${whereStatement}
+          ${orderByStatement};`;
+
+      return db.query(sql, values).then(({ rows }) => {
+        return rows;
+      });
+    });
+
+
+
+
+
+
 };
