@@ -25,3 +25,6 @@ You can also leave your opinion of the article once you have signed up to be our
 All articles are categorised by topic. You can therefore search article by topic.
 
 Setting
+git clone ....
+In terminal type $ npm install 
+npm run seed
