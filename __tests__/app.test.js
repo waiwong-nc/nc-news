@@ -601,7 +601,7 @@ describe('API',() => {
             avatar_url:
               "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
           });
-        })
+        });
     });
 
     test("404. no such user id found ", () => {
@@ -610,8 +610,79 @@ describe('API',() => {
         .expect(404)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toBe('User Not Found'); 
+          expect(msg).toBe("User Not Found");
         });
     });
-  }); // End of 13. GET /api
+  }); // End of 17. GET /user/:username
+
+  describe.only("18. PATCH /api/comments/:comment_id", () => {
+    
+    test("200. Respond a upated comments ", () => {
+      const update = { inc_votes: 100 };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(update)
+        .expect(200)
+        .then(({ body }) => {
+          const { comment } = body;
+          expect(comment).toHaveLength(1);
+          expect(comment[0]).toEqual({
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 116,
+            author: "butter_bridge",
+            comment_id: 1,
+            article_id: 9,
+            created_at: expect.any(String),
+          });
+        });
+    });
+
+    test.skip("404. no such comment id found ", () => {
+      const update = { inc_votes: 100 };
+      return request(app)
+        .patch("/api/comments/10000")
+        .send(update)
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("ID Not Found");
+        });
+    });
+
+    test.skip("400. invalid comment id ", () => {
+      const update = { inc_votes: 100 };
+      return request(app)
+        .patch("/api/comments/hajasdf")
+        .send(update)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("ID invalid");
+        });
+    });
+
+    test.skip("400. 'inc_votes; not in body ", () => {
+      const update = { int: 100 };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(update)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Property Not Found");
+        });
+    });
+
+    test.skip("400. 'inc_votes' 's value not valid ", () => {
+      const update = { inc_votes: "asdf" };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(update)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Value Not Valid");
+        });
+    });
+  }); // End of 18. GET /comments/:comment_id
 })
