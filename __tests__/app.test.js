@@ -586,4 +586,32 @@ describe('API',() => {
         });
     });
   }); // End of 13. GET /api
+
+  describe.only("17. GET /user/:username", () => {
+    test("200. Respond with a user object ", () => {
+      return request(app)
+        .get("/api/users/butter_bridge")
+        .expect(200)
+        .then(({ body }) => {
+          const { user } = body;
+          expect(user).toHaveLength(1);
+          expect(user[0]).toEqual({
+            username: "butter_bridge",
+            name: "jonny",
+            avatar_url:
+              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+          });
+        })
+    });
+
+    test("404. no such user id found ", () => {
+      return request(app)
+        .get("/api/users/buridge")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe('User Not Found'); 
+        });
+    });
+  }); // End of 13. GET /api
 })

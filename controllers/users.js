@@ -11,3 +11,16 @@ exports.getUsers = (req, res, next) => {
       next(err);
     });
 };
+
+//GET api/users/:username
+exports.getUser = (req, res, next) => {
+  const { username } = req.params
+  usersModel
+    .selectUserByUsername(username)
+    .then((user) => {
+      res.status(200).send({ user: user });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
