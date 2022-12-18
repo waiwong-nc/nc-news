@@ -30,12 +30,12 @@ jobs:
       - name: Chekcout and clone repo
         uses: actions/checkout@v3
 
-      - name: Setup PSQL
-        uses: harmon758/postgresql-action@v1
-        with:
-          postgresql db: test_db
-          postgresql user: 'mr_big'
-          postgresql password: '123'
+      # - name: Setup PSQL
+      #   uses: harmon758/postgresql-action@v1
+      #   with:
+      #     postgresql db: test_db
+      #     postgresql user: 'mr_big'
+      #     postgresql password: '123'
 
       - name: Install dependenies
         run: npm install
