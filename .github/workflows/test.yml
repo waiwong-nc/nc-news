@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Chekcout and clone repo
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Setup PSQL
         uses: harmon758/postgresql-action@v1
@@ -47,6 +47,6 @@ jobs:
       - name: Insert Data
         run: npm run seed
 
-      # - name: Test app
-      #   run: PGDATABASE=test_db PGUSER='mr_big' PGPASSWORD='123' npm run test-app
+      - name: Test app
+        run: PGDATABASE=test_db PGUSER='mr_big' PGPASSWORD='123' npm run test-app
 
