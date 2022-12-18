@@ -9,6 +9,9 @@ const errorHandlers = require("./controllers/errors");
 
 app.use(Express.json());
 
+console.log(undeclaredvariables)
+
+
 app.get("/api", apiControllers.getDescription);
 app.use("/api/topics", topicsRoute);
 app.use("/api/articles", articlesRoute);
