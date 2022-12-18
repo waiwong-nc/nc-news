@@ -9,7 +9,10 @@ const errorHandlers = require("./controllers/errors");
 
 app.use(Express.json());
 
-console.log(undeclaredvariables)
+
+app.get("/hello", (req, res, next) => {
+  res.status(200).send({ msg: "hellow" });
+});
 
 
 app.get("/api", apiControllers.getDescription);
