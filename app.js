@@ -9,7 +9,7 @@ const errorHandlers = require("./controllers/errors");
 
 app.use(Express.json());
 
-console.log(undeclaredvariable)
+console.log(undeclaredvariables)
 
 
 app.get("/api", apiControllers.getDescription);
