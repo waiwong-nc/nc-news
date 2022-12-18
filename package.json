@@ -5,6 +5,8 @@
   "main": "listen.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
+    "test-utils": "jest __tests__/utils.test.js",
+    "test-app": "jest __tests__/app.test.js",
     "seed": "node ./db/seeds/run-seed.js",
     "test": "jest",
     "prepare": "husky install"
