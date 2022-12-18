@@ -19,5 +19,5 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependenies
         run: npm install
-      - name: Test utils
+      - name: Test util
         run: npm run test
