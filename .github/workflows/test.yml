@@ -46,5 +46,5 @@ jobs:
       #   run: npm run seed
 
       - name: Test app
-        run: PGDATABASE=nc_news_test NODE_ENV=test npm run test-app
+        run: PGDATABASE=nc_news_test npm run test-app
 
