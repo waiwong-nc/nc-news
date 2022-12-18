@@ -47,6 +47,6 @@ jobs:
       - name: Insert Data
         run: npm run seed
 
-      - name: Test app
-        run: PGDATABASE=test_db PGUSER='mr_big' PGPASSWORD='123' npm run test-app
+      # - name: Test app
+      #   run: PGDATABASE=test_db PGUSER='mr_big' PGPASSWORD='123' npm run test-app
 
