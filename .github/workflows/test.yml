@@ -42,4 +42,16 @@ jobs:
 
       - name: Test app
         run: PGDATABASE=nc_news_test PGUSER=root PGPASSWORD=123 npm run test-app
+  
+  test-app-live-db:
+    needs: test-app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chekcout and clone repo
+        uses: actions/checkout@v3
 
+      - name: Install dependenies
+        run: npm install
+      
+      - name: Test app with live database
+        run: NODE_ENV=production DATABASE_URL=${{ secrets.DATABASE_URL }} npm run test-app
