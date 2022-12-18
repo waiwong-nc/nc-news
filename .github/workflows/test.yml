@@ -34,13 +34,15 @@ jobs:
         uses: harmon758/postgresql-action@v1
         with:
           postgresql db: nc_news_test
+          postgresql user: ""
+          postgresql password: ""
 
       - name: Install dependenies
         run: npm install
 
 
-      - name: Step up database
-        run: npm run setup-dbs
+      # - name: Step up database
+      #   run: npm run setup-dbs
 
       # - name: Insert Data
       #   run: npm run seed
