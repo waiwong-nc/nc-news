@@ -587,7 +587,7 @@ describe('API',() => {
     });
   }); // End of 13. GET /api
 
-  describe.only("17. GET /user/:username", () => {
+  describe("17. GET /user/:username", () => {
     test("200. Respond with a user object ", () => {
       return request(app)
         .get("/api/users/butter_bridge")
@@ -615,7 +615,7 @@ describe('API',() => {
     });
   }); // End of 17. GET /user/:username
 
-  describe.only("18. PATCH /api/comments/:comment_id", () => {
+  describe("18. PATCH /api/comments/:comment_id", () => {
     
     test("200. Respond a upated comments ", () => {
       const update = { inc_votes: 100 };
@@ -637,7 +637,7 @@ describe('API',() => {
         });
     });
 
-    test.skip("404. no such comment id found ", () => {
+    test("404. no such comment id found ", () => {
       const update = { inc_votes: 100 };
       return request(app)
         .patch("/api/comments/10000")
@@ -649,7 +649,7 @@ describe('API',() => {
         });
     });
 
-    test.skip("400. invalid comment id ", () => {
+    test("400. invalid comment id ", () => {
       const update = { inc_votes: 100 };
       return request(app)
         .patch("/api/comments/hajasdf")
@@ -661,7 +661,7 @@ describe('API',() => {
         });
     });
 
-    test.skip("400. 'inc_votes; not in body ", () => {
+    test("400. 'inc_votes; not in body ", () => {
       const update = { int: 100 };
       return request(app)
         .patch("/api/comments/1")
@@ -673,7 +673,7 @@ describe('API',() => {
         });
     });
 
-    test.skip("400. 'inc_votes' 's value not valid ", () => {
+    test("400. 'inc_votes' 's value not valid ", () => {
       const update = { inc_votes: "asdf" };
       return request(app)
         .patch("/api/comments/1")

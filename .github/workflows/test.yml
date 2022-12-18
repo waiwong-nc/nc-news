@@ -23,23 +23,23 @@ jobs:
         run: npm run test-utils
 
   
-  # test-app:
-  #   needs: test-utils
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Chekcout and clone repo
-  #     - uses: actions/checkout@v3
+  test-app:
+    needs: test-utils
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chekcout and clone repo
+      - uses: actions/checkout@v3
 
-  #     - name: Setup PSQL
-  #       uses: harmon758/postgresql-action@v1
-  #       with:
-  #         postgresql db: nc_news_test
-  #         postgresql user: mr_testerson
-  #         postgresql password: pa55w0rd
+      - name: Setup PSQL
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: nc_news_test
+          postgresql user: ''
+          postgresql password: ''
 
-  #     - name: Install dependenies
-  #       run: npm install
+      - name: Install dependenies
+        run: npm install
 
-  #     - name: Test app
-  #       run: PGDATABASE=nc_news_test PGUSER=mr_testerson PGPASSWORD=pa55w0rd npm run test-app
+      - name: Test app
+        run: PGDATABASE=nc_news_test PGUSER='' PGPASSWORD='' npm run test-app
 
